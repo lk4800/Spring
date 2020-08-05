@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:security="http://www.springframework.org/schema/security"
+xsi:schemaLocation="http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="customAccessDenied"
+  class="net.abc.security.CustomAccessDeniedHandler" />
+  <!-- CustomAccessDeniedHandler 클래스의 빈아이디 객체명 custom
+  AccessDenied를 설정해서 생성 => 자바코드 표현하면 
+   CustomAccessDeniedHandler customAccessDenied=new
+   CustomAccessDeniedHandler와 같은 역할을 한다.
+  -->
+  
+  <bean id="customLoginSuccess" 
+  class="net.abc.security.CustomLoginSuccessHandler" />
+  <!--  CustomLoginSuccessHandler 클래스의 빈아이디 객체명 
+  customLoginSuccess을 생성한다.-->
+  
+  <bean id="bcryptPasswordEncoder"
+  class=
+"org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+  <!-- 1. 스프링 시큐리티에서 제공되는 BCryptPasswordEncoder클래스는 비번을 암
+  호화 시킨다.-->  
+  
+  <security:http><!-- 스프링 시큐리티가 http에서 알수 있게 하는 시작지점 설정 -->
+  
+    <security:intercept-url pattern="/sample/all"
+    access="permitAll"/>
+    <!-- 특정한 url에 접근할 때 인터셉터(중간에 가로채는것)를 이용해서 접근을 제한
+    하는 설정은 <security:intercept-url>을 이용한다. pattern속성값은 
+    컨트롤러에 지정한 매핑주소가 된다. access속성은 권한범위를 체크한다.permitAll
+    은 모든 사용자를 허용한다. -->
+    
+    <security:intercept-url pattern="/sample/member" 
+    access="hasRole('ROLE_MEMBER')" />
+    <!-- ROLE_MEMBER는 로그인한 사용자만 접근할 수 있다. -->
+    
+     <security:intercept-url pattern="/sample/admin"
+     access="hasRole('ROLE_ADMIN')" />
+     <!-- 로그인 한 사용자들 중에서 관리자 권한을 가진 사용자만이 접근할 수 있다. -->
+     
+     <!--
+     <security:access-denied-handler error-page="/accessError"/>
+      접근금지 에러가 발생했을 때 accessError 매핑주소가 실행되게 함. 
+     net.abc.controller패키지에 accessError매핑주소가 실행될 CommonContro
+     ller 클래스를 생성한다.-->
+     
+     <security:access-denied-handler ref="customAccessDenied" />
+     <!-- 접근금지(403에러)가 발생했을때 빈아이디 customAccessDenied 빈아이디
+     호출 -->
+     <!--
+    <security:form-login /> 스프링 시큐리티에서 내부적으로 제공하는 폼
+    로그인 -->
+    
+    <security:form-login login-page="/customLogin" 
+    authentication-success-handler-ref="customLoginSuccess" />
+<!-- 커스텀 로그인 페이지로 이동하는 매핑주소 customLogin 등록 ,
+authentication-success-handler-ref 속성은 로그인 성공시 
+customLoginSuccess 빈아이디를 호출-->    
+
+    <security:logout logout-url="/customLogout" 
+    invalidate-session="true"/><!-- 로그아웃시 customLogout매핑주소가
+    실행돔.  invalidate-session="true"는 로그아웃시 세션을 무효화=>자바 코드로
+    표현하면 session.invalidate();와 기능이 같다.-->
+  </security:http>
+  
+ <!-- <security:authentication-manager> 스프링 시큐리티가 동작하기 위해
+  소는  authentication-manager(인증관리자)=>관리자,회원등 권한 설정 관리자-->
+   
+    <!--<security:authentication-provider>
+      <security:user-service>
+        <security:user name="member" password="{noop}member"
+        authorities="ROLE_MEMBER"/> 사용자 아이디가 member,비번이
+        member인 사용자는 로그인 인증처리를 한다.{noop}는 비번을 인코딩 즉 암호화
+        없이 사용한다. -->
+        
+      <!--  <security:user name="admin" password="{noop}admin"
+         authorities="ROLE_MEMBER,ROLE_ADMIN" /> 아이디가 
+         admin,비번이 admion 인 사용자는 /sample/member 와 /sample/admin
+         모두에 접근할 수 있다. 
+      </security:user-service>      
+    </security:authentication-provider>
+    
+  </security:authentication-manager>-->
+  
+  <security:authentication-manager><!-- 새롭게 인증관리자 설정 -->
+    <security:authentication-provider>
+    <!-- <security:jdbc-user-service data-source-ref="dataSource"/>
+      시큐리티 jdbc로 root-context.xml에 설정된 빈아이디 dataSource
+      를 호출해서 오라클 연결 -->
+      
+      <security:password-encoder ref="bcryptPasswordEncoder"/>
+      <!-- 비번암호화 -->
+      
+      <!-- 인증처리 -->
+      <security:jdbc-user-service data-source-ref="dataSource"
+              users-by-username-query="select userid,userpw,
+              enabled from tbl_member2 where userid=?"
+              authorities-by-username-query="select userid,
+              auth from tbl_member2_auth where userid=?" />
+      <!-- users-by-username-query는 회원 인증 처리 
+   data-source-ref="dataSource"는 root-context.xml의 빈아이디를 스프링
+   JDBC연결,authorities-by-username-query는 권한부여 확인
+    스프링 시큐리티 특징)
+    1.인증
+    2.권한 부여
+    -->              
+    </security:authentication-provider>    
+  </security:authentication-manager>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+

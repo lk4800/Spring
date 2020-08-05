@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+<!-- 매퍼 네임스페이스 명을 Member -->
+
+<!-- 회원저장 쿼리문 -->
+ <insert id="m_in" parameterType="org.zerock.vo.Member7VO">
+ <!-- id명인 m_in은 유일해야 한다 parameterType mybatis속성은 전달인자 타입이다 -->
+ insert into tbl_member values(#{userid},#{userpw},#{username},#{email},sysdate,sysdate)
+ <!-- #{userid}에서 userid는 Member7VO.java의 변수명이고, 자바코드로 표현하면
+ Member7VO객체명.getUserid(); 호출한 것과 같은 효과가 난다 -->
+ </insert>
+</mapper>
+
+
+
+
+

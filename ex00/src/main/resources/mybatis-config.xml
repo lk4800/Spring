@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<!-- 이 파일의 역할은 데이터 저장빈 클래스 객체 별칭을 관리한다 -->
+		<typeAlias type="org.zerock.vo.BoardVO" alias="b" />
+		<!-- BoardVO빈클래스 객체명 별칭 b를 생성해서 관리 => 매퍼 xml태그인 board.xml에서
+		 parameterType or resultType(반환타입속성)에서 참조한다 -->
+
+		<typeAlias type="org.zerock.vo.ReplyVO" alias="r" />
+		<typeAlias type="org.zerock.vo.UserVO" alias="user" />
+		<typeAlias type="org.zerock.vo.MessageVO" alias="message" />
+		
+	</typeAliases>
+</configuration>
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+	<!-- 매퍼 네임스페이스 명을 Member -->
+	
+<!-- 2.반환타입 memberMap이 실행 -->
+	<resultMap type="member" id="memberMap">
+	<!-- type속성은 member는 mybatis-config.xml에서 설정한 net.abc.vo패키지의
+	MemberVO빈클래스 객체명이다. member를 사용하지 않으면 net.abc.vo.MemberVO
+	풀패키지 경로를 모두 기입해야 한다 -->
+	
+		<!-- 이건 결과 매핑의 가장 기본적인 형태이다. id와 result 모두 한개의 칼럼을 한개의 프로퍼티(멤버변수)나 간단한 
+			데이터 타입의 필드에 매핑한다. 4. src/test/java 경로에 net.abc.mapper 패키지를 만들고 JUnit 테스트 
+			파일을 생성한다. 둘 사이의 차이점은 id 값은 객체 인스턴스를 비교할 때 사용되는 구분자 프로퍼티로 처리되는 점이다. 이 점은 일반적으로 
+			성능을 향상시키지만 특히 캐시와 내포된(nested) 결과 매핑(조인 매핑)의 경우에 더 그렇다. -->
+		<id property="userid" column="userid" />
+		<!-- property속성명 userid는 MemberVO.java의 멤버변수명(속성명,필드)이다
+		column은 tbl_member2테이블의 컬렴명인 userid이다
+		결국 해당 테이블의 컬럼명 레코드 값을 가져와 1:1 매핑으로 해당 빈클래스 변수명 userid에 저장한다 -->
+		<result property="userid" column="userid" />
+		<!-- vo의 이름이 property의 변수명과 같게
+			column은 SQL의 해당 컬럼명과 같게 -->
+		<result property="userpw" column="userpw" />
+		<result property="userName" column="username" />
+		<result property="regDate" column="regdate" />
+		<result property="updateDate" column="updatedate" />
+		
+<!-- 3.컬렉션 resultMap authMap을 호출해서 authvo제네릭 타입을 컬렉션에 저장 -->
+		<collection property="authList" resultMap="authMap">
+		</collection><!--컬렉션 제네릭 타입으로 복수개 값을 반환할수 있다. resultMap id authMap을 참조한다. -->
+	</resultMap>
+	<resultMap type="authvo" id="authMap">
+	<!-- type속성의  authvo는 mybatis-config.xml에서 설정한 net.abc.vo패키지의
+	AuthVO.java의 객체명이다 -->
+		<result property="userid" column="userid" />
+	<!-- property속성명 userid는 MemberVO.java의 멤버변수명(속성명,필드)이다
+		column은 tbl_member2테이블의 컬렴명인 userid이다 -->
+		<result property="auth" column="auth" />
+	</resultMap>
+	
+<!-- 1.read 아이디를 호출하면서 resultMap 아이디 memberMap을 호출  -->
+	<select id="read" resultMap="memberMap"
+		parameterType="java.lang.String">
+	<!-- parameterType은 전달인자 타입이다
+		반환타입이 resultType이 아니고 resultMap인 경우 해당 id를 호출해서 반환한다 -->
+		SELECT
+		mem.userid, userpw, username, enabled, regdate, updatedate,
+		auth
+		FROM
+		tbl_member2 mem LEFT OUTER JOIN tbl_member2_auth auth on
+		mem.userid = auth.userid 
+		<!-- on조건절에 공통컬럼의 같은 레코드 아이디 값을 기준으로 mem과 auth는 각 원본테이블의 별칭이름 접두어다 -->
+		WHERE mem.userid = #{userid} <!-- mem.userid라고 한 이유는 userid 컬럼은
+		2개의 테이블에 같은 이름이 컬럼명으로 있기 때문에 소속테이블을 알려줘야 한다 -->
+	</select>
+	<!-- LEFT Outer Join기법 : From 절다음에 테이블명을 기술할때 왼쪽,오른쪽에 기술하는데 오른쪽 테이블 명에 데이터가 
+		없는 경우 사용하는 조인기법이다. -->
+</mapper>
+
+
+
+
+

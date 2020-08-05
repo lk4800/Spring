@@ -1,0 +1,7 @@
+SQL> select count(*) from tbl_board;
+
+  COUNT(*)                                                                      
+----------                                                                      
+         5                                                                      
+
+SQL> spool off;

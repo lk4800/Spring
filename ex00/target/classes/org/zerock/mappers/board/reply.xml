@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Reply">
+<!-- 매퍼 네임스페이스 명을 Reply로 지정 -->
+
+  <!-- 댓글 저장 -->
+  <insert id="r_in" parameterType="r">
+  <!-- parameterType은 전달인자 속성 -->
+    insert into tbl_reply (rno,bno,replyer,replytext,regdate) values(rno_seq.nextval,#{bno},#{replyer},#{replytext},sysdate)
+  </insert>
+  
+  <!-- 댓글 목록 -->
+  <select id="r_list" parameterType="int" resultType="r">
+	<!-- resultType 은 반환타임 => 생략 불가 -->
+	select * from tbl_reply where bno=#{bno} order by rno desc
+  </select>
+  
+  <!-- 댓글 수정 -->
+  <update id="r_edit" parameterType="r">
+   update tbl_reply set replytext=#{replytext},updatedate=sysdate
+   where rno=#{rno}<!-- 댓글번호를 기준으로 댓글내용, 수정날짜를 변경 -->
+  </update>
+  
+  <!-- 댓글 삭제 -->
+  <delete id="r_del"> <!-- parameterType="int" 전달인자 타입속성이 생략 -->
+   delete from tbl_reply where rno=#{rno}
+  </delete>
+  
+  <!-- 댓글 번호로 부터 게시판 번호값 알아내기 -->
+  <select id="r_bno" resultType="int">
+   select bno from tbl_reply where rno=#{rno}
+  </select>
+  </mapper>

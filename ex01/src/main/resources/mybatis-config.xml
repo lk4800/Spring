@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias type="net.abc.vo.MemberVO" alias="member" />
+		<!-- MemberVO빈클래스 객체명 별칭 b를 생성해서 관리 =>
+			매퍼 xml인 member.xml에서 member을 사용한다 -->
+		<typeAlias type="net.abc.vo.AuthVO" alias="authvo" />
+	</typeAliases>
+</configuration>
+
+
+
+
+
+
+
+

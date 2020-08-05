@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+   1. Spring Legacy Project 에서는 서블릿 버전이 2.5이기 때문에 xml 네임스페이스를 2.5에서 3.1로 수정한다.
+   2. 톰캣 7.0 버전 이후부터는  서블릿 3.0이상을 지원하므로 3.0이상부터는 pom.xml에 이진 업로드 라이브러리를 추가하지 않고, 서블릿 자체적인 파일업로드
+   api를 사용한다.-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+		<!-- root-context.xml에는 스프링 MVC구조에서 서비스,모델DAO,
+		mybatis설정관련 부분만 포함되고, 컨트롤러와 뷰영역 설정부분은 포함안됨 -->
+	</context-param>
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Processes application requests -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+			<!-- 스프링 MVC구조에서 컨트롤러와 뷰영역만 servlet-context.xml
+			에 설정 -->
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		
+		<!-- 파일 첨부한 것을 이진파일이라고 한다.이진파일을 binary file이라고
+		부른다. 이진파일 업로드 설정=>자료실 -->
+		<multipart-config>
+		 <location>C:\\upload\\temp</location>
+<!-- 이진파일 업로드 서버 경로, 첨부파일은 실제 서버가 동작하는 컴퓨터 내에 있는 폴더에
+업로드 시켜야 하므로 c드라이브 밑에 upload폴더와 임시 업로드 파일이 저장할 temp폴더를
+각각 생성 -->
+         <max-file-size>20971520</max-file-size>
+<!-- 1MB * 20=20MB => 업로드 되는 파일 최대크기  ,1MB는 1048576 바이트-->
+         <max-request-size>41943040</max-request-size>
+<!-- 한번에 올리수 있는 최대크기 =>40 MB -->
+         <file-size-threshold>20971520</file-size-threshold>
+         <!--  20MB => 메모리 사용크기 -->         
+		</multipart-config>
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+   <!-- method=post로 전달되는 한글을 서버에서 받을 때 안깨지게 한다. 만약
+   이 설정부분을 안하면 스프링 컨트롤러 클래스에서 request.setCharacterEncoding
+   ("UTF-8");을 설정해야 한다. -->
+   <filter>
+    <filter-name>encoding</filter-name>
+    <filter-class>
+     org.springframework.web.filter.CharacterEncodingFilter
+    </filter-class>
+    <init-param>
+     <param-name>encoding</param-name>
+     <param-value>UTF-8</param-value>
+    </init-param>
+   </filter>
+   
+   <filter-mapping>
+    <filter-name>encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+   </filter-mapping>
+</web-app>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

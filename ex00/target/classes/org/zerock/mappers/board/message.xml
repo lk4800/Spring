@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Message"> <!-- 매퍼 네임스페이스 명을 Message로 지정 -->
+
+	<!-- 메시지 추가 -->
+	<insert id="m_in2" parameterType="message"> 
+	<!-- parameterType="message" = mybatist.xml에 <typeAlias type="org.zerock.vo.MessageVO" alias="message" /> -->
+	insert into tbl_message (mid,targetid,sender,message,senddate) values(mid_no_seq.nextval,#{targetid},
+	#{sender},#{message},sysdate)
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
